@@ -1,0 +1,5 @@
+me.ziyframework.web.common.config.WebAutoConfiguration
+me.ziyframework.web.jackson.config.JacksonAutoConfiguration
+me.ziyframework.web.log.http.HttpLogAutoConfiguration
+me.ziyframework.web.log.requestid.TranceIdAutoConfiguration
+me.ziyframework.web.security.config.EncryptAutoConfiguration

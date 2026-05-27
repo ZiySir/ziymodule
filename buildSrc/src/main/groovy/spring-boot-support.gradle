@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot'
+    id 'dependency-management'
+}
+
+description = 'spring-boot支撑插件'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    // SpringBoot开发基础依赖项
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // lombok
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar {
+    enabled = false
+}
+
+bootBuildImage {
+    enabled = false
+}
+
+bootRun {
+    enabled = false
+}

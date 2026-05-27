@@ -1,0 +1,60 @@
+plugins {
+	id 'java-basic'
+	id 'com.palantir.baseline-config'
+	id 'baseline'
+}
+
+allprojects {
+	group = 'me.ziyframework'
+	version = 'ziymodule'
+}
+
+
+tasks.register('gitInit') {
+	doLast {
+		var gitDir = file('.git')
+		if (!gitDir.exists() || gitDir.isFile()) {
+			logger.info '初始化 Git 仓库...'
+			run 'git init'
+			logger.info 'Git 仓库初始化完成'
+		} else {
+			logger.info 'Git 仓库已存在，跳过'
+		}
+
+		def preCommitHook = file('.git/hooks/pre-commit')
+		if (!preCommitHook.exists() || preCommitHook.isDirectory()) {
+			logger.info '创建 pre-commit hook'
+			preCommitHook.text = """#!/bin/bash
+                ./gradlew spotlessCheck --no-parallel
+                ./gradlew check --no-parallel
+                """
+		} else {
+			logger.info 'pre-commit hook 已存在'
+		}
+		if (!preCommitHook.canExecute()) {
+			preCommitHook.setExecutable(true)
+		}
+	}
+}
+
+tasks.register('frameworkInit') {
+	finalizedBy 'gitInit'
+	doLast {
+		logger.info '开始项目初始化...'
+
+		run "./gradlew cleanIdea baselineUpdateConfig idea dependencies"
+
+		def f = file('.baseline/copyright/999_palantir.txt')
+		if (f.exists()) {
+			logger.info '清空 999_palantir.txt'
+			f.text = ''
+		}
+
+		logger.info '=== 项目初始化完成 ==='
+	}
+}
+
+static def run(String cmd) {
+	cmd.execute().waitForProcessOutput(System.out, System.err)
+}
+

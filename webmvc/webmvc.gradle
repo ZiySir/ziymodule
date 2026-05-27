@@ -1,0 +1,16 @@
+plugins {
+	id 'java-basic'
+	id 'baseline'
+	id 'spring-boot-support'
+}
+
+description =  'webmvc快速开发模板'
+
+dependencies {
+	implementation 'me.ziyframework.boot:core-spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+
+	compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
+}

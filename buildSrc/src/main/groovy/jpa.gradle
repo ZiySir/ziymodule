@@ -1,0 +1,77 @@
+plugins {
+    id 'dependency-management'
+    id 'java-basic'
+    id 'spring-boot-support'
+}
+
+description "使用SpringDataJPA能力"
+
+dependencies {
+    developmentOnly 'p6spy:p6spy'
+
+    // postgres driver
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // 自定义数据层启动器：封装JPA、事务等通用配置
+    api 'me.ziyframework.module:data-spring-boot-starter'
+
+    // Spring Data JPA：ORM持久化框架
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // 自定义数据层代码生成器：生成JPA实体辅助代码
+    api 'me.ziyframework.compile:data-generate'
+    annotationProcessor 'me.ziyframework.compile:data-generate'
+
+    annotationProcessor project(':base:compile:jpa-generate')
+
+    // -------------------- JSON序列化 --------------------
+    // Jackson：处理数据库JSON类型字段
+    implementation 'tools.jackson.core:jackson-databind'
+
+    // -------------------- 元信息生成 ----------------/
+    compileOnly 'org.hibernate:hibernate-jpamodelgen'
+    annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
+
+    // -------------------- Blaze Persistence View --------------------
+    compileOnly 'com.blazebit:blaze-persistence-entity-view-api-jakarta'
+    runtimeOnly 'com.blazebit:blaze-persistence-entity-view-impl-jakarta'
+    /*
+    EntityView的静态元数据生成
+     */
+    compileOnly 'com.blazebit:blaze-persistence-entity-view-processor-jakarta'
+    annotationProcessor 'com.blazebit:blaze-persistence-entity-view-processor-jakarta'
+
+    // 使用正确的 Spring Data 4.0 集成版本来解决 AbstractMethodError
+    implementation 'com.blazebit:blaze-persistence-integration-spring-data-4.0'
+    implementation 'com.blazebit:blaze-persistence-integration-hibernate-7.1'
+
+}
+
+/* ***************************** 解决 jpamodel-gen重复生成问题 第二种方案 ***************************** */
+// 通过建立一个clearJpaModel任务，每次编译前删除生成的元数据文件，即保留的增量编译又避免了jpamodel重复生成
+tasks.register("clearJpaModel") {
+    group = "build"
+    description = "删除JPAModel生成的元数据文件"
+
+    doLast {
+        def generateDir = file("$buildDir/generated/sources/annotationProcessor/java/main")
+        if (!generateDir.exists()) {
+            return
+        }
+        /*
+        精确删除JPA元数据文件：仅删除Hibernate生成的元模型类（*_类）
+        这些文件的特征（暂时定义类名规则就够用了）：
+        1. 文件名以下划线结尾的.java文件（如DeviceDo_.java）
+         */
+        generateDir.traverse(
+                type: groovy.io.FileType.FILES,
+                nameFilter: ~/.*_\.java$/
+        ) { File file ->
+            file.delete()
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn 'clearJpaModel'
+}
