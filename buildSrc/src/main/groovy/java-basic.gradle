@@ -11,11 +11,12 @@ java {
 	// 管理gradle构建过程中的JDK版本，推荐使用，避免因为Gradle构建中JDK版本不同导致的问题
 	// 输出工具链信息: ./gradlew -q javaToolchains
 	// 已关闭自动下载,见gradle.properties
+	def javaVersion = JavaLanguageVersion.of(Integer.parseInt(providers.gradleProperty("versions.jdk").getOrElse('25')))
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
+		languageVersion = javaVersion
 	}
-	sourceCompatibility = JavaLanguageVersion.of(25)
-	targetCompatibility = JavaLanguageVersion.of(25)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
 }
 
 tasks.withType(JavaCompile).configureEach {

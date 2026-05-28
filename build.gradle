@@ -5,8 +5,8 @@ plugins {
 }
 
 allprojects {
-	group = 'me.ziyframework'
-	version = 'ziymodule'
+	group = providers.gradleProperty('groupId').getOrElse('org.demo')
+	version = '0.0.1'
 }
 
 

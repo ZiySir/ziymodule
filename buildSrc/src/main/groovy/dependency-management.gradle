@@ -11,7 +11,8 @@ repositories {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.boot:spring-boot-dependencies:4.0.6"
+		def springBootVersion = providers.gradleProperty('versions.spring-boot').getOrElse('4.0.6')
+		mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
 		mavenBom "me.ziyframework:dependencies:0.1.2"
 	}
 	dependencies {

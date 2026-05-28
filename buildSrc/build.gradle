@@ -2,12 +2,15 @@ plugins {
 	id 'groovy-gradle-plugin'
 }
 
+def props = new Properties()
+file('../gradle.properties').withInputStream { props.load(it) }
+
 dependencies {
 	implementation gradleApi()
 	implementation localGroovy()
 
 	implementation 'io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.7'
-	implementation "org.springframework.boot:org.springframework.boot.gradle.plugin:4.0.6" // SpringBoot版本
+	implementation "org.springframework.boot:org.springframework.boot.gradle.plugin:${props['versions.spring-boot']}" // SpringBoot版本
 
 	implementation "com.palantir.baseline:com.palantir.baseline.gradle.plugin:7.5.0"
 
