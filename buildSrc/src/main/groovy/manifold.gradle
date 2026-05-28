@@ -1,16 +1,16 @@
 plugins {
-    id 'dependency-management'
-    id 'java-basic'
+	id 'dependency-management'
+	id 'java-basic'
 }
 
 description 'manifold 方法扩展能力'
 
 dependencies {
-    compileOnly 'systems.manifold:manifold-ext'
-    implementation 'systems.manifold:manifold-ext-rt'
-    annotationProcessor 'systems.manifold:manifold-ext'
+	compileOnly 'systems.manifold:manifold-ext'
+	implementation 'systems.manifold:manifold-ext-rt'
+	annotationProcessor 'systems.manifold:manifold-ext'
 }
 
 compileJava {
-    options.compilerArgs += ['-Xplugin:Manifold']
+	options.compilerArgs += ['-Xplugin:Manifold']
 }
