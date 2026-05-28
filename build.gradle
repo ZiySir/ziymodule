@@ -24,10 +24,7 @@ tasks.register('gitInit') {
 		def preCommitHook = file('.git/hooks/pre-commit')
 		if (!preCommitHook.exists() || preCommitHook.isDirectory()) {
 			logger.info '创建 pre-commit hook'
-			preCommitHook.text = """#!/bin/bash
-                ./gradlew spotlessCheck --no-parallel
-                ./gradlew check --no-parallel
-                """
+			preCommitHook.text = "#!/bin/bash\n./gradlew spotlessCheck --no-parallel && ./gradlew check --no-parallel"
 		} else {
 			logger.info 'pre-commit hook 已存在'
 		}
@@ -42,7 +39,7 @@ tasks.register('frameworkInit') {
 	doLast {
 		logger.info '开始项目初始化...'
 
-		run "./gradlew cleanIdea baselineUpdateConfig idea dependencies"
+		run "./gradlew cleanIdea && rm -rf .idea || true && ./gradlew baselineUpdateConfig dependencies"
 
 		def f = file('.baseline/copyright/999_palantir.txt')
 		if (f.exists()) {

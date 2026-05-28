@@ -27,6 +27,44 @@ dependencies {
     implementation "org.jspecify:jspecify"
 }
 
+tasks.register('packageInfoApply') {
+    group = 'verification'
+    description = '自动创建包含 @NullMarked 的 package-info.java'
+    doLast {
+        java.sourceSets.each { sourceSet ->
+            sourceSet.java.srcDirs.each { srcDir ->
+                fileTree(srcDir) {
+                    include '**/*.java'
+                }.files
+                .stream()
+                .map {
+                    return it.parentFile.canonicalPath
+                }
+                .distinct()
+                .map {
+                    new File(it, 'package-info.java')
+                }
+                .filter {
+                    !it.exists()
+                }
+                .forEach {
+                    def path = srcDir.toPath().relativize(it.parentFile.toPath())
+                    def pkgName = path.collect {
+                        it.toString()
+                    }.join('.')
+                    it.text = "/**\n" +
+                            " * .\n" +
+                            " */\n" +
+                            "@NullMarked\n" +
+                            "package ${pkgName};\n" +
+                            "\n" +
+                            "import org.jspecify.annotations.NullMarked;\n"
+                }
+            }
+        }
+    }
+}
+
 // 代码自动格式化配置.
 spotless {
     java {
@@ -38,6 +76,7 @@ spotless {
         custom 'Lambda fix', { it.replace('} )', '})').replace('} ,', '},') }
     }
     groovyGradle {
+        target '**/*.gradle'
         greclipse()
     }
 }
