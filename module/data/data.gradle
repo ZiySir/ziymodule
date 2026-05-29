@@ -55,21 +55,18 @@ tasks.register("clearJpaModel") {
 	description = "删除JPAModel生成的元数据文件"
 
 	doLast {
-		def generateDir = file("$buildDir/generated/sources/annotationProcessor/java/main")
-		if (!generateDir.exists()) {
-			return
-		}
+		def directory = layout.buildDirectory.dir('generated/sources/annotationProcessor/java/main').get()
+
 		/*
 		 精确删除JPA元数据文件：仅删除Hibernate生成的元模型类（*_类）
 		 这些文件的特征（暂时定义类名规则就够用了）：
 		 1. 文件名以下划线结尾的.java文件（如DeviceDo_.java）
 		 */
-		generateDir.traverse(
-				type: groovy.io.FileType.FILES,
-				nameFilter: ~/.*_\.java$/
-				) { File file ->
-					file.delete()
-				}
+		directory.asFileTree.matching {
+			include '**/*_.java'
+		}.forEach {
+			it.delete()
+		}
 	}
 }
 
