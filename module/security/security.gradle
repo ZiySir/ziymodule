@@ -1,0 +1,24 @@
+plugins {
+    id 'java-basic'
+    id 'baseline'
+    id 'spring-boot-support'
+}
+
+description = """
+权限认证模块
+整体默认设计采用session方案
+1. Token自定义创建
+2. Session可关闭
+"""
+
+dependencies {
+    // redis依赖
+    implementation 'me.ziyframework.boot:redis-spring-boot-starter'
+
+    implementation project( ':module:webmvc')
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    // spring security boot starter
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation 'org.springframework.session:spring-session-data-redis'
+}

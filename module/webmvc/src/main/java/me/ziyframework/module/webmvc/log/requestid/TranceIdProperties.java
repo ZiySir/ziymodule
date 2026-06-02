@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author ziy
  */
-@ConfigurationProperties(prefix = "ziy.web.trance")
+@ConfigurationProperties(prefix = "module.mvc.trance")
 @Data
 public class TranceIdProperties {
 

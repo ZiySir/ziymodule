@@ -3,6 +3,9 @@ rootProject.name = rootDir.name
 include 'module'
 include 'module:webmvc'
 include 'module:data'
+include 'module:security'
+
+include 'example'
 
 rootProject.children.each { p ->
 	walk(p) { project, name ->

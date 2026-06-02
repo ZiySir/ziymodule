@@ -44,6 +44,9 @@ dependencyManagement {
 			entry 'blaze-persistence-integration-spring-data-4.0'
 			entry 'blaze-persistence-integration-hibernate-7.1'
 		}
+
+        // process
+        dependency 'com.google.auto.service:auto-service:1.1.1'
 	}
 }
 
