@@ -28,8 +28,7 @@ public class SecurityAutoConfiguration {
                     auth.anyRequest().authenticated();
                 })
                 .securityContext(config -> {
-                    config.securityContextRepository(
-                            new HttpSessionSecurityContextRepository());
+                    config.securityContextRepository(new HttpSessionSecurityContextRepository());
                 })
                 .formLogin(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)

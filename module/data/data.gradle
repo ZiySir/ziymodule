@@ -10,7 +10,7 @@ dependencies {
 	logger.info("当前hibernate版本 ${dependencyManagement.importedProperties.get('hibernate.version')} ,需要注意blaze集成版本是否对应")
 	implementation 'me.ziyframework.boot:core-spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter'
-    api 'me.ziyframework:core'
+	api 'me.ziyframework:core'
 
 	// JDBC相关工具库
 	developmentOnly 'p6spy:p6spy'
@@ -48,11 +48,11 @@ dependencies {
 	api "com.blazebit:blaze-persistence-integration-spring-data-4.0"
 	api "com.blazebit:blaze-persistence-integration-hibernate-7.1"
 
-    // process处理
-    api 'me.ziyframework.process:apt-common'
-    implementation 'com.palantir.javapoet:javapoet'
-    implementation 'jakarta.persistence:jakarta.persistence-api'
-    implementation 'com.google.auto.service:auto-service'
+	// process处理
+	api 'me.ziyframework.process:apt-common'
+	implementation 'com.palantir.javapoet:javapoet'
+	implementation 'jakarta.persistence:jakarta.persistence-api'
+	implementation 'com.google.auto.service:auto-service'
 }
 
 /* ***************************** 解决 jpamodel-gen重复生成问题 ***************************** */
@@ -83,26 +83,26 @@ tasks.named('compileJava') {
 
 
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += [
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-    ]
+	options.compilerArgs += [
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+		"--add-exports",
+		"jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+	]
 }
