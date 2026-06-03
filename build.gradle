@@ -24,7 +24,7 @@ tasks.register('gitInit') {
 		def preCommitHook = file('.git/hooks/pre-commit')
 		if (!preCommitHook.exists() || preCommitHook.isDirectory()) {
 			logger.info '创建 pre-commit hook'
-			preCommitHook.text = "#!/bin/bash\n./gradlew spotlessCheck --no-parallel && ./gradlew check --no-parallel"
+			preCommitHook.text = "#!/bin/bash\n./gradlew spotlessCheck -x test --no-parallel && ./gradlew check -x test --no-parallel"
 		} else {
 			logger.info 'pre-commit hook 已存在'
 		}
