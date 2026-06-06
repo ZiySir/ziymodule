@@ -19,6 +19,12 @@ public class LazyAuthenticationToken extends UsernamePasswordAuthenticationToken
      */
     private final Lazy<Collection<GrantedAuthority>> lazyAuthorities;
 
+    /**
+     * 构造支持懒加载的AuthenticationToken.
+     * @param principal 认证主体 (username)
+     * @param credentials 认证凭据 (password)
+     * @param lazyAuthorities 懒加载权限实现
+     */
     public LazyAuthenticationToken(
             @Nullable Object principal,
             @Nullable Object credentials,

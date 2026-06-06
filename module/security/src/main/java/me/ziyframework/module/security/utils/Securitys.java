@@ -1,10 +1,11 @@
 package me.ziyframework.module.security.utils;
 
+import com.google.common.base.Preconditions;
 import me.ziyframework.boot.core.SpringHolder;
 import me.ziyframework.framework.Lazy;
 import me.ziyframework.module.security.auth.AuthManager;
 import me.ziyframework.module.security.auth.LoginModel;
-import me.ziyframework.module.webmvc.common.WebHolder;
+import org.springframework.security.core.Authentication;
 
 /**
  * 安全工具类.
@@ -19,13 +20,10 @@ public final class Securitys {
 
     /**
      * 账号登录.
-     * @param type 登录类型
-     * @param id 登录唯一标识
-     * @param extra 扩展数据
      */
-    public static void login(String type, Object id, Object extra) {
+    public static void login(LoginModel loginModel) {
         final AuthManager authManager = AUTH_MANAGER_LAZY.get();
-        authManager.login(WebHolder.getRequest(), WebHolder.getResponse(), new LoginModel(type, id, extra));
+        authManager.login(loginModel);
     }
 
     /**
@@ -33,6 +31,14 @@ public final class Securitys {
      */
     public static void logout() {
         final AuthManager authManager = AUTH_MANAGER_LAZY.get();
-        authManager.logout(WebHolder.getRequest(), WebHolder.getResponse());
+        authManager.logout();
+    }
+
+    /**
+     * 获取当前上下文，如果不存在则抛出异常.
+     */
+    public static Authentication getCurrentOrThrow() {
+        Authentication current = AUTH_MANAGER_LAZY.get().current();
+        return Preconditions.checkNotNull(current, "current user context is null");
     }
 }

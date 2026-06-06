@@ -2,6 +2,7 @@ package me.ziyframework.module.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,7 +18,10 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @AutoConfiguration
 @EnableRedisIndexedHttpSession
 @RequiredArgsConstructor
+@EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityAutoConfiguration {
+
+    private final SecurityProperties securityProperties;
 
     /**
      * security过滤链.
@@ -25,7 +29,12 @@ public class SecurityAutoConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers(securityProperties.getDeny().toArray(String[]::new))
+                            .denyAll()
+                            .requestMatchers(securityProperties.getPermit().toArray(String[]::new))
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated();
                 })
                 .securityContext(config -> {
                     config.securityContextRepository(new HttpSessionSecurityContextRepository());
