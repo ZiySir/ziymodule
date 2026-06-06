@@ -23,7 +23,7 @@ public final class Securitys {
      */
     public static void login(LoginModel loginModel) {
         final AuthManager authManager = AUTH_MANAGER_LAZY.get();
-        authManager.login(loginModel);
+        //        authManager.login(loginModel);
     }
 
     /**
