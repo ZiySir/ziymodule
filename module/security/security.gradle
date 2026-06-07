@@ -19,6 +19,6 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-web"
 
 	// spring security boot starter
-	implementation "org.springframework.boot:spring-boot-starter-security"
-	implementation 'org.springframework.session:spring-session-data-redis'
+	api "org.springframework.boot:spring-boot-starter-security"
+	api 'org.springframework.session:spring-session-data-redis'
 }

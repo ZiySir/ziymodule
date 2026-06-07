@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
 
 /**
  * 安全模块的自动配置类.
@@ -16,7 +15,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @author ziy
  */
 @AutoConfiguration
-@EnableRedisIndexedHttpSession
 @RequiredArgsConstructor
 @EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityAutoConfiguration {

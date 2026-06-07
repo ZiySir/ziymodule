@@ -2,8 +2,9 @@ package me.ziyframework.module.security.utils;
 
 import com.google.common.base.Preconditions;
 import me.ziyframework.boot.core.SpringHolder;
-import me.ziyframework.framework.Lazy;
 import me.ziyframework.module.security.auth.AuthManager;
+import me.ziyframework.module.security.auth.AuthorityResolver;
+import me.ziyframework.module.security.auth.LazyAuthenticationToken;
 import me.ziyframework.module.security.auth.LoginModel;
 import org.springframework.security.core.Authentication;
 
@@ -14,31 +15,28 @@ import org.springframework.security.core.Authentication;
  */
 public final class Securitys {
 
-    private static final Lazy<AuthManager> AUTH_MANAGER_LAZY = Lazy.of(() -> SpringHolder.getBean(AuthManager.class));
-
     private Securitys() {}
 
     /**
      * 账号登录.
      */
-    public static void login(LoginModel loginModel) {
-        final AuthManager authManager = AUTH_MANAGER_LAZY.get();
-        //        authManager.login(loginModel);
+    public static void login(LoginModel loginModel, Object credentials) {
+        SpringHolder.getBean(AuthManager.class)
+                .login(loginModel, credentials, SpringHolder.getBean(AuthorityResolver.class));
     }
 
     /**
      * 登出当前用户.
      */
     public static void logout() {
-        final AuthManager authManager = AUTH_MANAGER_LAZY.get();
-        authManager.logout();
+        SpringHolder.getBean(AuthManager.class).logout();
     }
 
     /**
      * 获取当前上下文，如果不存在则抛出异常.
      */
-    public static Authentication getCurrentOrThrow() {
-        Authentication current = AUTH_MANAGER_LAZY.get().current();
-        return Preconditions.checkNotNull(current, "current user context is null");
+    public static LazyAuthenticationToken getCurrentOrThrow() {
+        Authentication current = SpringHolder.getBean(AuthManager.class).current();
+        return Preconditions.checkNotNull((LazyAuthenticationToken) current, "current user context is null");
     }
 }

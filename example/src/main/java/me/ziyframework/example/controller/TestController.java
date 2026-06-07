@@ -1,5 +1,8 @@
 package me.ziyframework.example.controller;
 
+import me.ziyframework.module.security.auth.LazyAuthenticationToken;
+import me.ziyframework.module.security.auth.LoginModel;
+import me.ziyframework.module.security.utils.Securitys;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +21,9 @@ public class TestController {
         return "login success";
     }
 
-    @GetMapping("/test/home")
-    public String home() {
-        return "home测试返回成功";
+    @GetMapping("/get")
+    public LoginModel home() {
+        LazyAuthenticationToken current = Securitys.getCurrentOrThrow();
+        return current.getLoginModel();
     }
 }
