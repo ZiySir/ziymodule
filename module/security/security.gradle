@@ -15,7 +15,8 @@ dependencies {
 	// redis依赖
 	implementation 'me.ziyframework.boot:redis-spring-boot-starter'
 
-	implementation project( ':module:webmvc')
+	implementation project(':module:webmvc')
+	implementation project(':module:data')
 	implementation "org.springframework.boot:spring-boot-starter-web"
 
 	// spring security boot starter
