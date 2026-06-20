@@ -1,5 +1,7 @@
 package me.ziyframework.module.security.auth;
 
+import me.ziyframework.module.security.entity.PrincipalType;
+
 /**
  * 登录的数据模型.
  * created in 2026-05
@@ -8,14 +10,14 @@ package me.ziyframework.module.security.auth;
 public record LoginModel(
 
         /*
-         登录类型，该字段可用于区分独立账号体系.
+         主体类型，多账号体系下区分使用.
         */
-        String type,
+        PrincipalType type,
 
         /*
          登录唯一标识,整个体系中将以此定位一个会话.
         */
-        Object loginId,
+        Long userId,
 
         /*
          扩展数据存储.

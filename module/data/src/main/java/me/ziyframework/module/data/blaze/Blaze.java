@@ -5,6 +5,7 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.blazebit.persistence.view.EntityViewManager;
 import com.blazebit.persistence.view.EntityViewSetting;
 import jakarta.persistence.EntityManager;
+import me.ziyframework.boot.core.SpringHolder;
 
 public class Blaze {
 
@@ -54,5 +55,12 @@ public class Blaze {
         CriteriaBuilder<E> cb = cbf.create(em, entityClazz);
         EntityViewSetting<V, CriteriaBuilder<V>> setting = EntityViewSetting.create(viewClazz);
         return evm.applySetting(setting, cb);
+    }
+
+    /**
+     * Blaze.
+     */
+    public static Blaze get() {
+        return SpringHolder.getBean(Blaze.class);
     }
 }

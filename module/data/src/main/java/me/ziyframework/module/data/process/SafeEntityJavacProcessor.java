@@ -14,7 +14,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import me.ziyframework.compile.common.BaseProcessor;
+import me.ziyframework.process.common.BaseProcessor;
 
 /**
  * .
@@ -38,8 +38,9 @@ public class SafeEntityJavacProcessor extends BaseProcessor {
                     JavacProcessingEnvironment env = javacProcessingEnvironment;
                     TreeMaker treeMaker = TreeMaker.instance(env.getContext());
                     Names names = Names.instance(env.getContext());
-                    unit.accept(
-                            new SafeEntityTranslator(javacProcessingEnvironment, this, typeElement, treeMaker, names));
+                    SafeEntityTranslator safeEntityTranslator =
+                            new SafeEntityTranslator(javacProcessingEnvironment, typeElement, treeMaker, names, types);
+                    unit.accept(safeEntityTranslator);
                 });
     }
 

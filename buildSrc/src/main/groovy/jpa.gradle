@@ -7,22 +7,21 @@ plugins {
 description "使用SpringDataJPA能力"
 
 dependencies {
+	logger.info("当前hibernate版本 ${dependencyManagement.importedProperties.get('hibernate.version')} ,需要注意blaze集成版本是否对应")
 	developmentOnly 'p6spy:p6spy'
 
 	// postgres driver
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// 自定义数据层启动器：封装JPA、事务等通用配置
-	api 'me.ziyframework.module:data-spring-boot-starter'
+	api 'me.ziyframework.boot:data-spring-boot-starter'
 
 	// Spring Data JPA：ORM持久化框架
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	// 自定义数据层代码生成器：生成JPA实体辅助代码
-	api 'me.ziyframework.compile:data-generate'
-	annotationProcessor 'me.ziyframework.compile:data-generate'
-
-	annotationProcessor project(':base:compile:jpa-generate')
+	api 'me.ziyframework.process:data-generate'
+	annotationProcessor 'me.ziyframework.process:data-generate'
 
 	// -------------------- JSON序列化 --------------------
 	// Jackson：处理数据库JSON类型字段
@@ -44,6 +43,12 @@ dependencies {
 	// 使用正确的 Spring Data 4.0 集成版本来解决 AbstractMethodError
 	implementation 'com.blazebit:blaze-persistence-integration-spring-data-4.0'
 	implementation 'com.blazebit:blaze-persistence-integration-hibernate-7.1'
+
+	// 引入:module:data模块
+	if (project.path != ':module:data') {
+		implementation project(':module:data')
+		annotationProcessor project(':module:data')
+	}
 }
 
 /* ***************************** 解决 jpamodel-gen重复生成问题 第二种方案 ***************************** */

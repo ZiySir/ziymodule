@@ -3,6 +3,7 @@ package me.ziyframework.module.data.process;
 import com.google.common.base.CaseFormat;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCBlock;
@@ -15,15 +16,14 @@ import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCReturn;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeMaker;
-import com.sun.tools.javac.tree.TreeTranslator;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.ListBuffer;
 import com.sun.tools.javac.util.Names;
-import jakarta.persistence.MappedSuperclass;
 import java.util.HashSet;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
-import me.ziyframework.compile.common.utils.JcUtil;
+import me.ziyframework.process.common.BaseTreeTranslator;
+import me.ziyframework.process.common.utils.JcUtil;
 
 /**
  * Translator：直接修改.
@@ -31,33 +31,15 @@ import me.ziyframework.compile.common.utils.JcUtil;
  *
  * @author ziy
  */
-public class SafeEntityTranslator extends TreeTranslator {
-
-    private static final String JAVA_LANG_OBJECT = "java.lang.Object";
-
-    private static final String MAPPED_SUPER_CLASS_NAME = MappedSuperclass.class.getCanonicalName();
-
-    private final TypeElement typeElement;
-
-    private final TreeMaker treeMaker;
-
-    private final Names names;
-
-    private final SafeEntityJavacProcessor javacProcessor;
-
-    private final JavacProcessingEnvironment roundEnvironment;
+public class SafeEntityTranslator extends BaseTreeTranslator {
 
     public SafeEntityTranslator(
-            JavacProcessingEnvironment roundEnvironment,
-            SafeEntityJavacProcessor javacProcessor,
+            JavacProcessingEnvironment processingEnvironment,
             TypeElement typeElement,
             TreeMaker treeMaker,
-            Names names) {
-        this.roundEnvironment = roundEnvironment;
-        this.javacProcessor = javacProcessor;
-        this.typeElement = typeElement;
-        this.treeMaker = treeMaker;
-        this.names = names;
+            Names names,
+            Types types) {
+        super(processingEnvironment, typeElement, treeMaker, names, types);
     }
 
     /**
@@ -75,7 +57,7 @@ public class SafeEntityTranslator extends TreeTranslator {
         Set<String> existingMethodNames = collectExistingMethodNames(tree);
 
         String qualifiedName = typeElement.getQualifiedName().toString();
-        roundEnvironment.getMessager().printNote("SafeEntityTreeTranslator: processing class " + qualifiedName);
+        processingEnvironment.getMessager().printNote("SafeEntityTreeTranslator: processing class " + qualifiedName);
 
         ListBuffer<JCTree> newDefs = new ListBuffer<>();
         for (JCVariableDecl var : vars) {
@@ -83,7 +65,7 @@ public class SafeEntityTranslator extends TreeTranslator {
             String methodName = "get" + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, fieldName) + "OrThrow";
 
             if (!existingMethodNames.contains(methodName)) {
-                roundEnvironment
+                processingEnvironment
                         .getMessager()
                         .printNote("SafeEntityTreeTranslator: generating " + methodName + "() for field " + fieldName);
                 JCMethodDecl method = buildMethodDecl(var, methodName);
@@ -92,7 +74,7 @@ public class SafeEntityTranslator extends TreeTranslator {
         }
 
         if (!newDefs.isEmpty()) {
-            roundEnvironment
+            processingEnvironment
                     .getMessager()
                     .printNote(
                             "SafeEntityTreeTranslator: generated " + newDefs.size() + " methods for " + qualifiedName);
