@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: example
+  datasource:
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+    properties:
+      hibernate.format_sql: true
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8080
+
+module:
+  security:
+    sign:
+      enabled: true
+      timestamp-tolerance-seconds: 300
+      nonce-ttl-seconds: 600
+      pattern:
+        - /api/*

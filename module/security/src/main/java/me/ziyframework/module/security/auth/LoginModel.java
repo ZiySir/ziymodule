@@ -1,6 +1,7 @@
 package me.ziyframework.module.security.auth;
 
 import me.ziyframework.module.security.entity.PrincipalType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * 登录的数据模型.
@@ -22,4 +23,4 @@ public record LoginModel(
         /*
          扩展数据存储.
         */
-        Object extra) {}
+        @Nullable Object extra) {}

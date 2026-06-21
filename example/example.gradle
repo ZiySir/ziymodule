@@ -2,11 +2,21 @@ plugins {
 	id 'java-basic'
 	id 'baseline'
 	id 'spring-boot-support'
+	id 'jpa'
 }
 
 dependencies {
 	api project(':module:webmvc')
+	api project(':module:data')
 	api project(':module:security')
 
+	implementation 'com.h2database:h2:2.4.240'
+
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.testcontainers:testcontainers:1.20.4'
+}
+
+// 覆盖 spring-boot-support.gradle 默认禁用的 bootRun,以便 example 可启动
+bootRun {
+	enabled = true
 }
