@@ -66,3 +66,16 @@
 **当出现以下情况时，说明这些准则在起作用：** diff 中不必要的修改减少，因过度复杂而重写的情况减少，澄清问题出现在实现之前而非错误之后。
 
 # 代码规范
+
+* 代码规范中约束了一些地方的规定使用，请必须遵循，如果确实不能应用必须明确告知用户并让用户自己确认
+
+## Null规范
+1. 全局采用 Jspecify 项目来规范化nullable的检查
+2. 必须通过 package-info.java 中添加 @Nullable 注解，让项目整体为`默认非空`的规则
+```java
+// 示例
+@NullMarked
+package me.ziyframework.module.security.sign;
+
+import org.jspecify.annotations.NullMarked;
+```

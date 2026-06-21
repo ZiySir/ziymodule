@@ -1,0 +1,16 @@
+import me.ziyframework.buildsrc.GitHooksExtension
+import me.ziyframework.buildsrc.HookInstaller
+
+description = "自动为项目同步 .git/hooks/pre-push 钩子（MD5 幂等）"
+
+extensions.create('gitHooks', GitHooksExtension)
+
+afterEvaluate {
+	if (!file('.git').isDirectory()) {
+		return
+	}
+	if (!gitHooks.prePushCommand) {
+		return
+	}
+	HookInstaller.sync(project.file('.git/hooks/pre-push'), gitHooks.prePushCommand, logger)
+}

@@ -1,1 +1,2 @@
 me.ziyframework.module.security.config.SecurityAutoConfiguration
+me.ziyframework.module.security.config.SignAutoConfiguration
