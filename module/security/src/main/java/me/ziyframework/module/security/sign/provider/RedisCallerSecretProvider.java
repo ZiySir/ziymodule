@@ -35,7 +35,7 @@ public class RedisCallerSecretProvider implements CallerSecretProvider {
         }
         OpenCallerDo caller = repository
                 .findByAk(ak)
-                .filter(OpenCallerDo::isEnabled)
+                .filter(OpenCallerDo::getEnabled)
                 .orElseThrow(() -> new CallerNotFoundException(ak));
         safeRedisPut(ak, caller.getSk());
         return caller.getSk();

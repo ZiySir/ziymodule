@@ -35,7 +35,7 @@ dependencyManagement {
 		}
 
 		// blaze
-		dependencySet(group: 'com.blazebit', version: '1.6.17') {
+		dependencySet(group: 'com.blazebit', version: '1.6.18') {
 			entry 'blaze-persistence-core-api-jakarta'
 			entry 'blaze-persistence-entity-view-api-jakarta'
 			entry 'blaze-persistence-entity-view-impl-jakarta'

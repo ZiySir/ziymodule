@@ -22,7 +22,7 @@ public class BackendUserService {
      */
     public LoginModel login(String username, String password) {
         BackendUserDo user =
-                repository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("用户名或密码错误"));
+                repository.findByAccount(username).orElseThrow(() -> new IllegalArgumentException("用户名或密码错误"));
         if (!Objects.equals(user.getPassword(), password)) {
             throw new IllegalArgumentException("用户名或密码错误");
         }

@@ -1,5 +1,6 @@
 package me.ziyframework.module.security.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -20,43 +21,27 @@ import org.jspecify.annotations.Nullable;
 @EqualsAndHashCode(callSuper = true)
 public class RoleDo extends JpaRelationalBaseEntity {
 
-    /**
-     * 角色编码,全局唯一,代码/配置引用使用.
-     */
+    @Column(length = 32, nullable = false, comment = "角色编码,全局唯一,代码/配置引用使用")
     private @Nullable String code;
 
-    /**
-     * 显示名.
-     */
+    @Column(length = 32, nullable = false, comment = "显示名")
     private @Nullable String name;
 
-    /**
-     * 父角色 id. null 表示根角色. 权限上行继承.
-     */
+    @Column(comment = "父角色 id. null 表示根角色. 权限上行继承")
     private @Nullable Long parentId;
 
-    /**
-     * 该角色所属的账号体系. 与 PrincipalRole.principalType 对应.
-     */
+    @Column(columnDefinition = "smallint", nullable = false, comment = "该角色所属的账号体系. 与 PrincipalRole.principalType 对应")
     private @Nullable PrincipalType ownerType;
 
-    /**
-     * 排序权重,后台展示用.
-     */
+    @Column(comment = "排序权重")
     private @Nullable Integer sort;
 
-    /**
-     * 是否内置. true 时禁止删除/改 code,由 Service 层强制.
-     */
+    @Column(options = "default false", nullable = false, comment = "是否内置. true 时禁止删除/改 code")
     private @Nullable Boolean builtin;
 
-    /**
-     * 是否禁用. 禁用时本节点不参与权限解析,但继承链不截断 (跳过本节点继续向上).
-     */
+    @Column(options = "default false", nullable = false, comment = "是否禁用. 禁用时本节点不参与权限解析,但继承链不截断 (跳过本节点继续向上)")
     private @Nullable Boolean disabled;
 
-    /**
-     * 备注.
-     */
+    @Column(length = 255, comment = "备注")
     private @Nullable String remark;
 }

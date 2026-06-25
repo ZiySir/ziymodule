@@ -9,16 +9,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
     properties:
-      hibernate.format_sql: true
-  sql:
-    init:
-      mode: always
-  data:
-    redis:
-      host: localhost
-      port: 6379
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.tool.hbm2ddl: DEBUG
 
 server:
   port: 8080

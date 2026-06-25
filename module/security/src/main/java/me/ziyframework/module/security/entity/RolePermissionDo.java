@@ -1,5 +1,6 @@
 package me.ziyframework.module.security.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -18,13 +19,9 @@ import org.jspecify.annotations.Nullable;
 @EqualsAndHashCode(callSuper = true)
 public class RolePermissionDo extends JpaRelationalBaseEntity {
 
-    /**
-     * 角色 id.
-     */
+    @Column(nullable = false, comment = "角色id")
     private @Nullable Long roleId;
 
-    /**
-     * 权限 id.
-     */
+    @Column(nullable = false, comment = "权限id")
     private @Nullable Long permissionId;
 }

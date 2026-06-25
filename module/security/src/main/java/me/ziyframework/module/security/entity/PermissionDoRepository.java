@@ -20,8 +20,9 @@ public interface PermissionDoRepository extends SpringDataJpaBaseRepository<Perm
      * 角色自身的 disabled 在此处一并过滤,以实现"禁用节点不贡献权限"语义.
      */
     @Query("""
-            select distinct PermissionDo.code from PermissionDo
-                     join RolePermissionDo on RolePermissionDo.permissionId = PermissionDo.id and RolePermissionDo.roleId in :roleIds and PermissionDo.disabled = false
+            select distinct p.code from PermissionDo p
+                     join RolePermissionDo rp on rp.permissionId = p.id
+                    where rp.roleId in :roleIds and p.disabled = false
         """)
     List<String> getEnabledCodeByRoleIdIn(@Param("roleIds") Collection<Long> roleIds);
 }

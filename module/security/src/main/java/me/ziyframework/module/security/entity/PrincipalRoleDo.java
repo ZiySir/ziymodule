@@ -1,5 +1,6 @@
 package me.ziyframework.module.security.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -20,18 +21,12 @@ import org.jspecify.annotations.Nullable;
 @EqualsAndHashCode(callSuper = true)
 public class PrincipalRoleDo extends JpaRelationalBaseEntity {
 
-    /**
-     * 主体类型. 与 Role.ownerType 对应.
-     */
+    @Column(nullable = false, comment = "主体类型. 与 Role.ownerType 对应")
     private @Nullable PrincipalType principalType;
 
-    /**
-     * 主体 id. 例如 BackendUser.id.
-     */
+    @Column(nullable = false, comment = "主体 id. 例如 BackendUser.id")
     private @Nullable Long principalId;
 
-    /**
-     * 角色 id.
-     */
+    @Column(nullable = false, comment = "角色id")
     private @Nullable Long roleId;
 }

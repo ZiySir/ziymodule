@@ -1,5 +1,6 @@
 package me.ziyframework.module.security.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -20,28 +21,18 @@ import org.jspecify.annotations.Nullable;
 @EqualsAndHashCode(callSuper = true)
 public class PermissionDo extends JpaRelationalBaseEntity {
 
-    /**
-     * 权限编码,全局唯一. 例如 "user:read".
-     */
+    @Column(length = 64, nullable = false, unique = true, comment = "权限编码,全局唯一. 例如 user:read")
     private @Nullable String code;
 
-    /**
-     * 显示名.
-     */
+    @Column(length = 64, nullable = false, comment = "权限显示名称(display name)")
     private @Nullable String name;
 
-    /**
-     * 是否内置. true 时禁止删除/改 code,由 Service 层强制.
-     */
+    @Column(nullable = false, options = "default false", comment = "是否内置. true 时禁止删除/改 code")
     private @Nullable Boolean builtin;
 
-    /**
-     * 是否禁用. true 时权限解析阶段会被过滤掉.
-     */
+    @Column(nullable = false, options = "default false", comment = "是否禁用. true 时权限解析阶段会被过滤掉")
     private @Nullable Boolean disabled;
 
-    /**
-     * 备注.
-     */
+    @Column(length = 255, comment = "权限备注")
     private @Nullable String remark;
 }
