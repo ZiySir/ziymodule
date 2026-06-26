@@ -24,6 +24,16 @@ public class SecurityProperties {
     private Set<String> deny = new HashSet<>();
 
     /**
+     * 整个Security模块使用的redis数据源.
+     */
+    private String aloneRedis = "default";
+
+    /**
+     * 会话配置.
+     */
+    private SessionConfig session = new SessionConfig();
+
+    /**
      * AK/SK 签名子节点.
      */
     private Sign sign = new Sign();
@@ -64,5 +74,18 @@ public class SecurityProperties {
          * 需要应用的路径.
          */
         private List<String> pattern = List.of("/api/*");
+    }
+
+    /**
+     * 会话相关配置.
+     */
+    @Getter
+    @Setter
+    public static class SessionConfig {
+
+        /**
+         * 是否启动会话.
+         */
+        private boolean enabled = false;
     }
 }

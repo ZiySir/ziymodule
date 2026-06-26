@@ -31,13 +31,14 @@ public class BaseEnumJacksonModule extends JacksonModule {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void setupModule(SetupContext context) {
         SimpleSerializers serializers = new SimpleSerializers();
-        serializers.addSerializer(BaseEnum.class, BaseEnumSerializer.INSTANCE);
+        serializers.addSerializer((Class) BaseEnum.class, BaseEnumSerializer.INSTANCE);
         context.addSerializers(serializers);
 
         SimpleDeserializers deserializers = new SimpleDeserializers();
-        deserializers.addDeserializer(BaseEnum.class, BaseEnumDeserializer.INSTANCE);
+        deserializers.addDeserializer((Class) BaseEnum.class, BaseEnumDeserializer.INSTANCE);
         context.addDeserializers(deserializers);
 
         context.addDeserializerModifier(BaseEnumValueDeserializerModifier.INSTANCE);

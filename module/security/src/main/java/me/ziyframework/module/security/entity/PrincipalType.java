@@ -12,7 +12,7 @@ import me.ziyframework.framework.enumeration.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum PrincipalType implements BaseEnum {
+public enum PrincipalType implements BaseEnum<PrincipalType> {
 
     /**
      * 后台用户.

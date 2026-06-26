@@ -79,3 +79,4 @@ package me.ziyframework.module.security.sign;
 
 import org.jspecify.annotations.NullMarked;
 ```
+3. 优先考虑使用Guava工具中的Preconditions代替其他类似的断言工具.

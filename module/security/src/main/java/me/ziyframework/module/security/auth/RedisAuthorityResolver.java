@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Redis缓存实现.
@@ -30,7 +30,7 @@ public class RedisAuthorityResolver implements AuthorityResolver {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final RoleDoRepository roleDoRepository;
 
@@ -46,7 +46,7 @@ public class RedisAuthorityResolver implements AuthorityResolver {
         String cached = stringRedisTemplate.opsForValue().get(key);
         if (cached != null && !cached.isEmpty()) {
             try {
-                List<String> authorityStrings = objectMapper.readValue(cached, new TypeReference<>() {});
+                List<String> authorityStrings = jsonMapper.readValue(cached, new TypeReference<>() {});
                 return authorityStrings.stream()
                         .map(SimpleGrantedAuthority::new)
                         .map(authority -> (GrantedAuthority) authority)
@@ -89,7 +89,7 @@ public class RedisAuthorityResolver implements AuthorityResolver {
                 .filter(Objects::nonNull)
                 .toList();
         try {
-            stringRedisTemplate.opsForValue().set(key, objectMapper.writer().writeValueAsString(authorityStrings));
+            stringRedisTemplate.opsForValue().set(key, jsonMapper.writer().writeValueAsString(authorityStrings));
         } catch (Exception ex) {
             log.warn("权限缓存写入失败, key<{}>", key, ex);
         }

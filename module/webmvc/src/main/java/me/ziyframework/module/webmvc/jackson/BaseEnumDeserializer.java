@@ -15,11 +15,11 @@ import tools.jackson.databind.ValueDeserializer;
  *
  * @author ziy
  */
-public final class BaseEnumDeserializer extends ValueDeserializer<BaseEnum> {
+public final class BaseEnumDeserializer extends ValueDeserializer<BaseEnum<?>> {
 
     public static final BaseEnumDeserializer INSTANCE = new BaseEnumDeserializer();
 
-    private @Nullable Class<? extends BaseEnum> baseEnumCls;
+    private @Nullable Class<?> baseEnumCls;
 
     private BaseEnumDeserializer() {}
 
@@ -27,16 +27,24 @@ public final class BaseEnumDeserializer extends ValueDeserializer<BaseEnum> {
      * BaseEnum反序列化.
      */
     @Override
-    public BaseEnum deserialize(JsonParser parser, DeserializationContext _ctxt) {
+    public BaseEnum<?> deserialize(JsonParser parser, DeserializationContext _ctxt) {
         // 获取JSON输入值（支持数字或字符串类型的code）
         Integer codeValue = parser.readValueAs(Integer.class);
         // 调用BaseEnum的fromCode方法获取枚举实例
-        BaseEnum baseEnum =
-                BaseEnum.fromCode(codeValue, Preconditions.checkNotNull(baseEnumCls, "BaseEnum class not set"));
+        Class<?> cls = Preconditions.checkNotNull(baseEnumCls, "BaseEnum class not set");
+        BaseEnum<?> baseEnum = fromCodeChecked(codeValue, cls);
         if (baseEnum == null) {
             throw new IllegalArgumentException("无效值" + codeValue);
         }
         return baseEnum;
+    }
+
+    /**
+     * 在运行时已知Class一定为枚举类型的前提下做受控转换.
+     */
+    @SuppressWarnings("unchecked")
+    private static <E extends Enum<E> & BaseEnum<E>> @Nullable BaseEnum<?> fromCodeChecked(Integer code, Class<?> cls) {
+        return BaseEnum.fromCode(code, (Class<E>) cls);
     }
 
     @SuppressWarnings("unchecked")
@@ -45,8 +53,7 @@ public final class BaseEnumDeserializer extends ValueDeserializer<BaseEnum> {
             DeserializationContext _deserializationContext, BeanProperty beanProperty) {
         BaseEnumDeserializer deserializer = new BaseEnumDeserializer();
         JavaType type = beanProperty.getType();
-        Class<?> rawClass = type.getRawClass();
-        deserializer.baseEnumCls = (Class<? extends BaseEnum>) rawClass;
+        deserializer.baseEnumCls = type.getRawClass();
         return deserializer;
     }
 }

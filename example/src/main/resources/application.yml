@@ -6,13 +6,25 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: ""
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init.sql
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+  data:
+    redis:
+      multi:
+        primary: default
+        datasource:
+          default:
+            host: 127.0.0.1
+            port: 6379
 
 logging:
   level:
@@ -20,6 +32,7 @@ logging:
 
 server:
   port: 8080
+
 
 module:
   security:
@@ -29,3 +42,5 @@ module:
       nonce-ttl-seconds: 600
       pattern:
         - /api/*
+    permit:
+      - /login

@@ -12,14 +12,14 @@ import tools.jackson.databind.ValueSerializer;
  *
  * @author ziy
  */
-public final class BaseEnumSerializer extends ValueSerializer<BaseEnum> {
+public final class BaseEnumSerializer extends ValueSerializer<BaseEnum<?>> {
 
     public static final BaseEnumSerializer INSTANCE = new BaseEnumSerializer();
 
     private BaseEnumSerializer() {}
 
     @Override
-    public void serialize(BaseEnum value, JsonGenerator gen, SerializationContext _ctxt) throws JacksonException {
+    public void serialize(BaseEnum<?> value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         gen.writeNumber(value.getCode());
     }
 }

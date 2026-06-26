@@ -1,5 +1,6 @@
 package me.ziyframework.module.webmvc.common.config;
 
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import me.ziyframework.framework.enumeration.BaseEnum;
 import me.ziyframework.module.webmvc.common.exception.ExceptionAdvice;
@@ -69,13 +70,25 @@ public class WebAutoConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addFormatters(FormatterRegistry registry) {
-                registry.addConverterFactory(new ConverterFactory<String, BaseEnum>() {
+                registry.addConverterFactory(new ConverterFactory<String, BaseEnum<?>>() {
                     @Override
-                    public <T extends BaseEnum> Converter<String, T> getConverter(Class<T> targetType) {
-                        return source -> BaseEnum.fromCode(Integer.parseInt(source), targetType);
+                    public <T extends BaseEnum<?>> Converter<String, T> getConverter(Class<T> targetType) {
+                        return source -> convertToBaseEnum(Integer.parseInt(source), targetType);
                     }
                 });
             }
         };
+    }
+
+    /**
+     * 将字符串形式的 code 转换为 BaseEnum 枚举实例.
+     *
+     * <p>{@link ConverterFactory} 的方法签名仅以 {@code BaseEnum<?>} 为上界, 而 {@link BaseEnum#fromCode}
+     * 要求传入 {@code Class<E extends Enum<E> & BaseEnum<E>>}, 两者无法在类型系统中精确对齐, 故在此做受控转换.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static <T extends BaseEnum<?>> T convertToBaseEnum(int code, Class<T> targetType) {
+        T result = (T) BaseEnum.fromCode(code, (Class) targetType);
+        return Preconditions.checkNotNull(result, "无效枚举值: %s", code);
     }
 }
