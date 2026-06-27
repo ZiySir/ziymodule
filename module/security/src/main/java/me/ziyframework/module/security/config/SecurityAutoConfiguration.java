@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import me.ziyframework.boot.redis.RedisHolder;
 import me.ziyframework.module.security.auth.AuthManager;
 import me.ziyframework.module.security.auth.AuthorityResolver;
+import me.ziyframework.module.security.auth.LoginAuthenticationProvider;
+import me.ziyframework.module.security.auth.PlainPasswordEncoder;
 import me.ziyframework.module.security.auth.RedisAuthorityResolver;
 import me.ziyframework.module.security.entity.PermissionDoRepository;
 import me.ziyframework.module.security.entity.RoleDoRepository;
@@ -14,8 +16,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -48,6 +53,14 @@ public class SecurityAutoConfiguration {
     }
 
     /**
+     * 密码编码器(示例阶段使用明文比对,生产应替换为 BCryptPasswordEncoder).
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new PlainPasswordEncoder();
+    }
+
+    /**
      * SpringSecurity的 安全上下文 的Repository仓库.
      */
     @Bean
@@ -56,11 +69,20 @@ public class SecurityAutoConfiguration {
     }
 
     /**
-     * 认证管理器.
+     * 认证管理器: 委派给 LoginAuthenticationProvider.
      */
     @Bean
-    public AuthManager authManager(SecurityContextRepository securityContextRepository) {
-        return new AuthManager(securityContextRepository);
+    public AuthenticationManager authenticationManager(LoginAuthenticationProvider loginAuthenticationProvider) {
+        return new ProviderManager(loginAuthenticationProvider);
+    }
+
+    /**
+     * 认证管理器门面(AuthManager 内部持有,用于 authenticate + 写 context).
+     */
+    @Bean
+    public AuthManager authManager(
+            AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
+        return new AuthManager(authenticationManager, securityContextRepository);
     }
 
     /**

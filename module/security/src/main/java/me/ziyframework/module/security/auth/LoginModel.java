@@ -21,6 +21,11 @@ public record LoginModel(
         Long userId,
 
         /*
+         登录账号,用于 AuthenticationProvider 查找用户与审计展示.
+        */
+        String username,
+
+        /*
          扩展数据存储.
         */
         @Nullable Object extra) {}
