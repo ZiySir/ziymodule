@@ -46,7 +46,6 @@ public class LoginAuthenticationProvider extends AbstractUserDetailsAuthenticati
         return backendUserDoRepository
                 .findByUsername(username)
                 .map(backendUserDo -> {
-                    roleDoRepository
                     new AuthUserDetails(backendUserDo.getUid(), backendUserDo.getUsername(), )
                 })
                 .orElseThrow(() -> new UsernameNotFoundException("用户不存在"));

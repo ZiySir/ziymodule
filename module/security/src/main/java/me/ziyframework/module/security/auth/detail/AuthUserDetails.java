@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * 用户UserDetails实现.
  */
-public record AuthUserDetails(String uid, String username, Collection<GrantedAuthority> authorities, boolean disabled, boolean locked)
+public record AuthUserDetails(
+        String uid, String username, Collection<GrantedAuthority> authorities, boolean disabled, boolean locked)
         implements UserDetails {
 
     @Override
