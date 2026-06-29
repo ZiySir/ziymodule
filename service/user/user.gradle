@@ -1,0 +1,6 @@
+plugins {
+    id 'java-basic'
+    id 'baseline'
+    id 'spring-boot-support'
+    id 'jpa'
+}

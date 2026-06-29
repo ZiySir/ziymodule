@@ -4,6 +4,8 @@ include 'module:webmvc'
 include 'module:data'
 include 'module:security'
 
+include 'service'
+
 include 'example'
 
 rootProject.children.each { p ->

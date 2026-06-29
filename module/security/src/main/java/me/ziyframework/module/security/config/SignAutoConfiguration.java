@@ -6,8 +6,8 @@ import me.ziyframework.module.security.sign.SignErrorResponseWriter;
 import me.ziyframework.module.security.sign.SignValidatorServletFilter;
 import me.ziyframework.module.security.sign.nonce.NonceGuard;
 import me.ziyframework.module.security.sign.nonce.RedisCallerNonceGuard;
+import me.ziyframework.module.security.sign.provider.AbstractRedisCallerSecretProvider;
 import me.ziyframework.module.security.sign.provider.CallerSecretProvider;
-import me.ziyframework.module.security.sign.provider.RedisCallerSecretProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -52,7 +52,7 @@ public class SignAutoConfiguration {
     public CallerSecretProvider callerSecretProvider(
             StringRedisTemplate redisTemplate, OpenCallerDoRepository repository, SecurityProperties properties) {
         SecurityProperties.Sign sign = properties.getSign();
-        return new RedisCallerSecretProvider(redisTemplate, repository, sign.getSkCacheTtlSeconds());
+        return new AbstractRedisCallerSecretProvider(redisTemplate, repository, sign.getSkCacheTtlSeconds());
     }
 
     /**

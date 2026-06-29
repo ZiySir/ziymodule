@@ -6,17 +6,14 @@ import com.password4j.Argon2Function;
 import com.password4j.types.Argon2;
 import lombok.RequiredArgsConstructor;
 import me.ziyframework.boot.redis.RedisHolder;
+import me.ziyframework.module.security.auth.AbstractLoginAuthenticationProvider;
 import me.ziyframework.module.security.auth.AuthManager;
-import me.ziyframework.module.security.auth.AuthorityResolver;
-import me.ziyframework.module.security.auth.LoginAuthenticationProvider;
-import me.ziyframework.module.security.auth.RedisAuthorityResolver;
 import me.ziyframework.module.security.entity.PermissionDoRepository;
 import me.ziyframework.module.security.entity.RoleDoRepository;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -32,6 +29,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * 安全模块的自动配置类.
  * created in 2026-05
+ *
  * @author ziy
  */
 @AutoConfiguration
@@ -40,7 +38,6 @@ import tools.jackson.databind.json.JsonMapper;
 @EntityScan(basePackages = "me.ziyframework.module.security.entity")
 @EnableEntityViews(basePackages = "me.ziyframework.module.security.entity")
 @EnableBlazeRepositories(basePackages = "me.ziyframework.module.security.entity")
-@ComponentScan(basePackageClasses = LoginAuthenticationProvider.class)
 public class SecurityAutoConfiguration {
 
     private final SecurityProperties securityProperties;
@@ -69,8 +66,8 @@ public class SecurityAutoConfiguration {
      * 认证管理器: 将认证逻辑全面委派给 LoginAuthenticationProvider.
      */
     @Bean
-    public AuthenticationManager authenticationManager(LoginAuthenticationProvider loginAuthenticationProvider) {
-        return new ProviderManager(loginAuthenticationProvider);
+    public AuthenticationManager authenticationManager(AbstractLoginAuthenticationProvider abstractLoginAuthenticationProvider) {
+        return new ProviderManager(abstractLoginAuthenticationProvider);
     }
 
     /**

@@ -3,7 +3,6 @@ package me.ziyframework.module.security.sign.provider;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.ziyframework.module.security.entity.OpenCallerDo;
 import me.ziyframework.module.security.entity.OpenCallerDoRepository;
 import me.ziyframework.module.security.sign.SignRedisKeys;
 import me.ziyframework.module.security.sign.exception.CallerNotFoundException;
@@ -12,11 +11,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * Redis 缓存 + DB 回源查询 SK.
+ *
  * @author ziy
  */
 @RequiredArgsConstructor
 @Slf4j
-public class RedisCallerSecretProvider implements CallerSecretProvider {
+public abstract class AbstractRedisCallerSecretProvider implements CallerSecretProvider {
 
     private final StringRedisTemplate redisTemplate;
 
@@ -33,13 +33,18 @@ public class RedisCallerSecretProvider implements CallerSecretProvider {
         if (cached != null) {
             return cached;
         }
-        OpenCallerDo caller = repository
-                .findByAk(ak)
-                .filter(OpenCallerDo::getEnabled)
-                .orElseThrow(() -> new CallerNotFoundException(ak));
-        safeRedisPut(ak, caller.getSk());
-        return caller.getSk();
+        String sk = forceGetSk();
+        if (sk == null) {
+            throw new CallerNotFoundException(ak);
+        }
+        safeRedisPut(ak, sk);
+        return sk;
     }
+
+    /**
+     * 手动查询Sk.
+     */
+    public abstract @Nullable String forceGetSk();
 
     private @Nullable String safeRedisGet(String ak) {
         try {

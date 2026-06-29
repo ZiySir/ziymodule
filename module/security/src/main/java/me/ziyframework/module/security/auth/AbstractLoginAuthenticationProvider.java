@@ -2,54 +2,37 @@ package me.ziyframework.module.security.auth;
 
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.module.security.auth.detail.AuthUserDetails;
-import me.ziyframework.module.security.entity.BackendUserDoRepository;
-import me.ziyframework.module.security.entity.RoleDoRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 
 /**
  * 登录认证核心逻辑 Provider.
  * created in 2026-06
+ *
  * @author ziy
  */
-@Component
 @RequiredArgsConstructor
-public class LoginAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+public abstract class AbstractLoginAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    private final BackendUserDoRepository backendUserDoRepository;
-
-    private final RoleDoRepository roleDoRepository;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void additionalAuthenticationChecks(
+    protected abstract void additionalAuthenticationChecks(
             UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException {
-        // 暂时
-    }
+            throws AuthenticationException;
 
     /**
      * {@inheritDoc}
      * 从数据库中检索用户.
      */
     @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException {
-        return backendUserDoRepository
-                .findByUsername(username)
-                .map(backendUserDo -> {
-                    new AuthUserDetails(backendUserDo.getUid(), backendUserDo.getUsername(), )
-                })
-                .orElseThrow(() -> new UsernameNotFoundException("用户不存在"));
-    }
+    protected abstract UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException;
 
     /**
      * 保持自定义的Authentication相同类型的返回.
