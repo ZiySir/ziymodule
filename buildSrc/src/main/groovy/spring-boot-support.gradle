@@ -10,7 +10,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	// SpringBoot开发基础依赖项
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	// lombok
 	testCompileOnly 'org.projectlombok:lombok'

@@ -15,5 +15,5 @@ public interface BackendUserDoRepository extends SpringDataJpaBaseRepository<Bac
     /**
      * 按用户名查询.
      */
-    Optional<BackendUserDo> findByAccount(String account);
+    Optional<BackendUserDo> findByUsername(String username);
 }

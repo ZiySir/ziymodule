@@ -1,6 +1,7 @@
 package me.ziyframework.module.security.auth;
 
 import java.util.Collection;
+import me.ziyframework.module.security.entity.PrincipalType;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -14,5 +15,5 @@ public interface AuthorityResolver {
     /**
      * 根据主体信息获取权限.
      */
-    Collection<GrantedAuthority> resolve(LoginModel loginModel);
+    Collection<GrantedAuthority> resolve(PrincipalType type, long userId);
 }

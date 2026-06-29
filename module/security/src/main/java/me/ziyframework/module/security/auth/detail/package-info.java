@@ -1,4 +1,4 @@
 @NullMarked
-package me.ziyframework.example.config;
+package me.ziyframework.module.security.auth.detail;
 
 import org.jspecify.annotations.NullMarked;

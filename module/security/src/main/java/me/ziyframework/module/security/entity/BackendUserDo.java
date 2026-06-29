@@ -24,7 +24,10 @@ public class BackendUserDo extends JpaRelationalBaseEntity {
     private @Nullable String uid;
 
     @Column(length = 32, nullable = false, unique = true, comment = "用户账号")
-    private @Nullable String account;
+    private @Nullable String username;
+
+    @Column(nullable = false, options = "default false", comment = "用户锁定状态(默认不锁定)")
+    private @Nullable Boolean locked;
 
     @Column(length = 512, nullable = false, comment = "密码(Argon2id)")
     private @Nullable String password;

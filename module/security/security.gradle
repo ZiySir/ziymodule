@@ -23,4 +23,7 @@ dependencies {
 	// spring security boot starter
 	api "org.springframework.boot:spring-boot-starter-security"
 	api 'org.springframework.session:spring-session-data-redis'
+
+	// java的密码库
+	implementation 'com.password4j:password4j'
 }

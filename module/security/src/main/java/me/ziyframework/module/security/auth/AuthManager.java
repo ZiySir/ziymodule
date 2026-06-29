@@ -1,6 +1,7 @@
 package me.ziyframework.module.security.auth;
 
 import lombok.RequiredArgsConstructor;
+import me.ziyframework.module.security.entity.PrincipalType;
 import me.ziyframework.module.webmvc.common.WebHolder;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,13 +29,12 @@ public class AuthManager {
      * 登录.
      * <p>通过 {@link AuthenticationManager} 完成认证,把已认证的 Authentication 写入 SecurityContext
      * 并持久化到 Repository.</p>
-     * @param loginModel 登录主体信息.
-     * @param credential 凭据(明文密码)
-     * @param authorityResolver 权限懒加载实现
+     * @param username 登录的用户账号.
      */
-    public void login(LoginModel loginModel, Object credential, AuthorityResolver authorityResolver) {
-        LazyAuthenticationToken token = new LazyAuthenticationToken(loginModel, credential, authorityResolver);
-        Authentication authenticated = authenticationManager.authenticate(token);
+    public void login(PrincipalType type, String username, String plainPassword) {
+        MultiUsernamePasswordAuthenticationToken authentication =
+                new MultiUsernamePasswordAuthenticationToken(type, username, plainPassword);
+        Authentication authenticated = authenticationManager.authenticate(authentication);
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authenticated);

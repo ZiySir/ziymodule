@@ -2,12 +2,13 @@ package me.ziyframework.module.security.config;
 
 import com.blazebit.persistence.integration.view.spring.EnableEntityViews;
 import com.blazebit.persistence.spring.data.repository.config.EnableBlazeRepositories;
+import com.password4j.Argon2Function;
+import com.password4j.types.Argon2;
 import lombok.RequiredArgsConstructor;
 import me.ziyframework.boot.redis.RedisHolder;
 import me.ziyframework.module.security.auth.AuthManager;
 import me.ziyframework.module.security.auth.AuthorityResolver;
 import me.ziyframework.module.security.auth.LoginAuthenticationProvider;
-import me.ziyframework.module.security.auth.PlainPasswordEncoder;
 import me.ziyframework.module.security.auth.RedisAuthorityResolver;
 import me.ziyframework.module.security.entity.PermissionDoRepository;
 import me.ziyframework.module.security.entity.RoleDoRepository;
@@ -15,12 +16,14 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password4j.Argon2Password4jPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -37,6 +40,7 @@ import tools.jackson.databind.json.JsonMapper;
 @EntityScan(basePackages = "me.ziyframework.module.security.entity")
 @EnableEntityViews(basePackages = "me.ziyframework.module.security.entity")
 @EnableBlazeRepositories(basePackages = "me.ziyframework.module.security.entity")
+@ComponentScan(basePackageClasses = LoginAuthenticationProvider.class)
 public class SecurityAutoConfiguration {
 
     private final SecurityProperties securityProperties;
@@ -53,23 +57,16 @@ public class SecurityAutoConfiguration {
     }
 
     /**
-     * 密码编码器(示例阶段使用明文比对,生产应替换为 BCryptPasswordEncoder).
+     * Argon2id 密码编码器.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new PlainPasswordEncoder();
+        Argon2Function instance = Argon2Function.getInstance(65536, 3, 2, 32, Argon2.ID);
+        return new Argon2Password4jPasswordEncoder(instance);
     }
 
     /**
-     * SpringSecurity的 安全上下文 的Repository仓库.
-     */
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
-    }
-
-    /**
-     * 认证管理器: 委派给 LoginAuthenticationProvider.
+     * 认证管理器: 将认证逻辑全面委派给 LoginAuthenticationProvider.
      */
     @Bean
     public AuthenticationManager authenticationManager(LoginAuthenticationProvider loginAuthenticationProvider) {
@@ -83,6 +80,14 @@ public class SecurityAutoConfiguration {
     public AuthManager authManager(
             AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         return new AuthManager(authenticationManager, securityContextRepository);
+    }
+
+    /**
+     * SpringSecurity的 安全上下文 的Repository仓库.
+     */
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
     }
 
     /**

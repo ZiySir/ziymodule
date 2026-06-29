@@ -1,8 +1,6 @@
 package me.ziyframework.example.auth;
 
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.module.security.auth.LoginModel;
-import me.ziyframework.module.security.entity.BackendUserDo;
 import me.ziyframework.module.security.entity.BackendUserDoRepository;
 import me.ziyframework.module.security.entity.PrincipalType;
 import me.ziyframework.module.security.utils.Securitys;
@@ -21,10 +19,7 @@ public class BackendUserService {
      * 失败时 Provider 抛 {@link org.springframework.security.authentication.BadCredentialsException}
      * 或 {@link org.springframework.security.authentication.DisabledException},由调用方处理.</p>
      */
-    public LoginModel login(String username, String password) {
-        BackendUserDo user = repository.findByAccount(username).orElseThrow();
-        LoginModel model = new LoginModel(PrincipalType.BACKEND, user.getIdOrThrow(), user.getAccount(), null);
-        Securitys.login(model, password);
-        return model;
+    public void login(String username, String password) {
+        Securitys.login(PrincipalType.BACKEND, username, password);
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.ziyframework.boot.redis.RedisKey;
 import me.ziyframework.module.security.entity.PermissionDoRepository;
+import me.ziyframework.module.security.entity.PrincipalType;
 import me.ziyframework.module.security.entity.RoleDoRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +19,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Redis缓存实现.
- * 优先从Redis读取权限，缓存未命中时调用 {@link #forceResolve(LoginModel)} 加载并回写缓存.
+ * 优先从Redis读取权限，缓存未命中时调用 {@link #forceResolve} 加载并回写缓存.
  * created in 2026-06
  * @author ziy
  */
@@ -38,11 +39,11 @@ public class RedisAuthorityResolver implements AuthorityResolver {
 
     /**
      * 支持Redis缓存Authority.
-     * 缓存命中时直接返回；缓存未命中时执行 {@link #forceResolve(LoginModel)} 构建并回写缓存.
+     * 缓存命中时直接返回；缓存未命中时执行 {@link #forceResolve} 构建并回写缓存.
      */
     @Override
-    public Collection<GrantedAuthority> resolve(LoginModel loginModel) {
-        String key = buildKey(loginModel);
+    public Collection<GrantedAuthority> resolve(PrincipalType type, long uid) {
+        String key = buildKey(type, uid);
         String cached = stringRedisTemplate.opsForValue().get(key);
         if (cached != null && !cached.isEmpty()) {
             try {
@@ -56,7 +57,7 @@ public class RedisAuthorityResolver implements AuthorityResolver {
             }
         }
 
-        Collection<GrantedAuthority> authorities = forceResolve(loginModel);
+        Collection<GrantedAuthority> authorities = forceResolve(type, uid);
         cache(key, authorities);
         return authorities;
     }
@@ -66,9 +67,8 @@ public class RedisAuthorityResolver implements AuthorityResolver {
      * <p>解析顺序: 直接角色 → 沿 {@code RoleDo.parentId} 上行收集祖先角色(保留链,跳过自身禁用) →
      * 联表查询双方均启用的权限 code → 转 GrantedAuthority.</p>
      */
-    public Collection<GrantedAuthority> forceResolve(LoginModel loginModel) {
-        Set<Long> allRoleIds = roleDoRepository.getAllEnabledRoleIdByPrincipalIdAndType(
-                loginModel.type().getCode(), loginModel.userId());
+    public Collection<GrantedAuthority> forceResolve(PrincipalType type, long uid) {
+        Set<Long> allRoleIds = roleDoRepository.getAllEnabledRoleIdByPrincipalIdAndType(type.getCode(), uid);
         if (allRoleIds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -89,7 +89,8 @@ public class RedisAuthorityResolver implements AuthorityResolver {
                 .filter(Objects::nonNull)
                 .toList();
         try {
-            stringRedisTemplate.opsForValue().set(key, jsonMapper.writer().writeValueAsString(authorityStrings));
+            String value = jsonMapper.writer().writeValueAsString(authorityStrings);
+            stringRedisTemplate.opsForValue().set(key, value);
         } catch (Exception ex) {
             log.warn("权限缓存写入失败, key<{}>", key, ex);
         }
@@ -98,7 +99,7 @@ public class RedisAuthorityResolver implements AuthorityResolver {
     /**
      * 构建Redis缓存key.
      */
-    private String buildKey(LoginModel loginModel) {
-        return AUTHORITY_KEY.fmt(loginModel.type().getCode(), loginModel.userId());
+    private String buildKey(PrincipalType type, long uid) {
+        return AUTHORITY_KEY.fmt(type.getCode(), uid);
     }
 }

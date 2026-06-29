@@ -8,12 +8,13 @@ drop table if exists role_permission cascade;
 create table backend_user (
                               deleted boolean not null,
                               disabled boolean not null default false,
+                              locked boolean not null default false,
                               created_at timestamp(6) with time zone,
                               created_by bigint,
                               id bigint not null,
                               last_updated_at timestamp(6) with time zone,
                               last_updated_by bigint,
-                              account varchar(32) not null unique,
+                              username varchar(32) not null unique,
                               nick_name varchar(32),
                               uid varchar(128) not null unique,
                               password varchar(512) not null,
@@ -47,7 +48,7 @@ create table permission (
 );
 
 create table principal_role (
-                                principal_type tinyint not null,
+                                principal_type smallint not null,
                                 created_at timestamp(6) with time zone,
                                 created_by bigint,
                                 id bigint not null,

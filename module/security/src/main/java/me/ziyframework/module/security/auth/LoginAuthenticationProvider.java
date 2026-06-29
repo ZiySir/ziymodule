@@ -1,63 +1,75 @@
 package me.ziyframework.module.security.auth;
 
-import java.util.Objects;
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.module.security.entity.BackendUserDo;
+import me.ziyframework.module.security.auth.detail.AuthUserDetails;
 import me.ziyframework.module.security.entity.BackendUserDoRepository;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import me.ziyframework.module.security.entity.RoleDoRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 /**
- * 登录认证 Provider.
- * <p>从 {@link LazyAuthenticationToken#getLoginModel()} 读取 username,
- * 按账号查找 {@link BackendUserDo},校验密码与禁用状态,
- * 返回已认证的 {@link LazyAuthenticationToken}.</p>
+ * 登录认证核心逻辑 Provider.
  * created in 2026-06
  * @author ziy
  */
 @Component
 @RequiredArgsConstructor
-public class LoginAuthenticationProvider implements AuthenticationProvider {
+public class LoginAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    private final BackendUserDoRepository repository;
+    private final BackendUserDoRepository backendUserDoRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final RoleDoRepository roleDoRepository;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        LazyAuthenticationToken token = (LazyAuthenticationToken) authentication;
-        LoginModel loginModel = token.getLoginModel();
-        String username = loginModel.username();
+    protected void additionalAuthenticationChecks(
+            UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException {
+        // 暂时
+    }
 
-        BackendUserDo user;
-        try {
-            user = repository.findByAccount(username).orElseThrow(() -> new BadCredentialsException("用户名或密码错误"));
-        } catch (BadCredentialsException ex) {
-            // 保留 BadCredentialsException 不被包装,直接透传给调用方
-            throw ex;
-        } catch (RuntimeException ex) {
-            throw new InternalAuthenticationServiceException("登录失败", ex);
-        }
+    /**
+     * {@inheritDoc}
+     * 从数据库中检索用户.
+     */
+    @Override
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException {
+        return backendUserDoRepository
+                .findByUsername(username)
+                .map(backendUserDo -> {
+                    roleDoRepository
+                    new AuthUserDetails(backendUserDo.getUid(), backendUserDo.getUsername(), )
+                })
+                .orElseThrow(() -> new UsernameNotFoundException("用户不存在"));
+    }
 
-        if (Boolean.TRUE.equals(user.getDisabled())) {
-            throw new DisabledException("账号已禁用");
-        }
+    /**
+     * 保持自定义的Authentication相同类型的返回.
+     */
+    @Override
+    protected Authentication createSuccessAuthentication(
+            Object principal, Authentication authentication, UserDetails user) {
+        Authentication parentResult = super.createSuccessAuthentication(principal, authentication, user);
+        // 将返回的Authentication转换到Multi
+        MultiUsernamePasswordAuthenticationToken multiAuthentication =
+                (MultiUsernamePasswordAuthenticationToken) authentication;
 
-        String raw = Objects.toString(token.getCredentials(), null);
-        if (raw == null || !passwordEncoder.matches(raw, user.getPassword())) {
-            throw new BadCredentialsException("用户名或密码错误");
-        }
-
-        return new LazyAuthenticationToken(loginModel, null, token.getAuthorityResolver());
+        MultiUsernamePasswordAuthenticationToken authenticated = new MultiUsernamePasswordAuthenticationToken(
+                multiAuthentication.getType(),
+                Preconditions.checkNotNull(multiAuthentication.getPrincipal(), "principal must not be null"),
+                multiAuthentication.getCredentials(), // 使用令牌表示凭证.
+                parentResult.getAuthorities());
+        authenticated.setDetails(user);
+        return authenticated;
     }
 
     /**
@@ -65,6 +77,6 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public boolean supports(Class<?> authentication) {
-        return LazyAuthenticationToken.class.isAssignableFrom(authentication);
+        return MultiUsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

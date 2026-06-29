@@ -15,7 +15,7 @@ dependencyManagement {
 	imports {
 		def springBootVersion = providers.gradleProperty('versions.spring-boot').getOrElse('4.0.6')
 		mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-		mavenBom "me.ziyframework:dependencies:0.1.6-SNAPSHOT"
+		mavenBom "me.ziyframework:dependencies:0.1.11-SNAPSHOT"
 	}
 	dependencies {
 		// jpa-modelgen版本
@@ -49,6 +49,9 @@ dependencyManagement {
 
 		// process
 		dependency 'com.google.auto.service:auto-service:1.1.1'
+
+		// java的密码库
+		dependency 'com.password4j:password4j:1.8.4'
 	}
 }
 

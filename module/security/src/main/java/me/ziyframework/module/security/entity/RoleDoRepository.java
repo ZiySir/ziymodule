@@ -18,7 +18,7 @@ public interface RoleDoRepository extends SpringDataJpaBaseRepository<RoleDo> {
      * 单条 SQL 取主体的全部角色 id(含沿 {@code parent_id} 上行的所有祖先).
      */
     @Query(value = """
-        WITH RECURSIVE role_tree AS (
+        WITH RECURSIVE role_tree (id, parent_id) AS (
             SELECT r.id, r.parent_id
             FROM role r
             JOIN principal_role pr ON pr.role_id = r.id

@@ -55,20 +55,22 @@ public class DataInitializer implements ApplicationRunner {
         // 用户
         BackendUserDo admin = new BackendUserDo();
         admin.setUid("u-admin");
-        admin.setAccount("admin");
+        admin.setUsername("admin");
         admin.setPassword("123456");
         admin.setNickName("管理员");
         admin.setDisabled(false);
+        admin.setLocked(false);
         admin.setCreatedAt(now);
         admin.setLastUpdatedAt(now);
         userRepo.save(admin);
 
         BackendUserDo user = new BackendUserDo();
         user.setUid("u-user");
-        user.setAccount("user");
+        user.setUsername("user");
         user.setPassword("123456");
         user.setNickName("普通用户");
         user.setDisabled(false);
+        user.setLocked(false);
         user.setCreatedAt(now);
         user.setLastUpdatedAt(now);
         userRepo.save(user);
