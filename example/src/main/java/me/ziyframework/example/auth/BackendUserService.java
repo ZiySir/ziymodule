@@ -1,9 +1,9 @@
 package me.ziyframework.example.auth;
 
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.module.security.entity.BackendUserDoRepository;
-import me.ziyframework.module.security.entity.PrincipalType;
+import me.ziyframework.module.security.auth.PrincipalType;
 import me.ziyframework.module.security.utils.Securitys;
+import me.ziyframework.service.user.entity.BackendUserDoRepository;
 import org.springframework.stereotype.Service;
 
 /** 后台用户登录服务（账号/密码/禁用校验由 LoginAuthenticationProvider 完成）. */

@@ -2,7 +2,6 @@ package me.ziyframework.module.security.auth;
 
 import java.util.Collection;
 import lombok.Getter;
-import me.ziyframework.module.security.entity.PrincipalType;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

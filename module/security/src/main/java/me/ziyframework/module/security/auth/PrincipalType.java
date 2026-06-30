@@ -1,4 +1,4 @@
-package me.ziyframework.module.security.entity;
+package me.ziyframework.module.security.auth;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

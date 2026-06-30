@@ -1,4 +1,4 @@
-package me.ziyframework.module.security.entity;
+package me.ziyframework.service.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

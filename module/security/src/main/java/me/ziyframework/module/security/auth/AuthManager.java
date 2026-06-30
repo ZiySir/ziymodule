@@ -1,7 +1,6 @@
 package me.ziyframework.module.security.auth;
 
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.module.security.entity.PrincipalType;
 import me.ziyframework.module.webmvc.common.WebHolder;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;

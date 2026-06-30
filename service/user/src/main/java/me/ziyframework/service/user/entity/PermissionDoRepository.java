@@ -1,4 +1,4 @@
-package me.ziyframework.module.security.entity;
+package me.ziyframework.service.user.entity;
 
 import java.util.Collection;
 import java.util.List;

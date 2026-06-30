@@ -17,14 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public abstract class AbstractLoginAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-
     /**
      * {@inheritDoc}
      */
     @Override
     protected abstract void additionalAuthenticationChecks(
-            UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException;
+            UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException;
 
     /**
      * {@inheritDoc}

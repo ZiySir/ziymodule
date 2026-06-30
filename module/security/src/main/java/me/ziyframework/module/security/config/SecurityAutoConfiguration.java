@@ -5,16 +5,12 @@ import com.blazebit.persistence.spring.data.repository.config.EnableBlazeReposit
 import com.password4j.Argon2Function;
 import com.password4j.types.Argon2;
 import lombok.RequiredArgsConstructor;
-import me.ziyframework.boot.redis.RedisHolder;
 import me.ziyframework.module.security.auth.AbstractLoginAuthenticationProvider;
 import me.ziyframework.module.security.auth.AuthManager;
-import me.ziyframework.module.security.entity.PermissionDoRepository;
-import me.ziyframework.module.security.entity.RoleDoRepository;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +20,6 @@ import org.springframework.security.crypto.password4j.Argon2Password4jPasswordEn
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
-import tools.jackson.databind.json.JsonMapper;
 
 /**
  * 安全模块的自动配置类.
@@ -43,17 +38,6 @@ public class SecurityAutoConfiguration {
     private final SecurityProperties securityProperties;
 
     /**
-     * 默认注入一个Redis的权限加载器.
-     */
-    @Bean
-    public AuthorityResolver authorityResolver(
-            JsonMapper jsonMapper, RoleDoRepository roleDoRepository, PermissionDoRepository permissionDoRepository) {
-        StringRedisTemplate stringRedisTemplate =
-                RedisHolder.getStringRedisTemplate(securityProperties.getAloneRedis());
-        return new RedisAuthorityResolver(stringRedisTemplate, jsonMapper, roleDoRepository, permissionDoRepository);
-    }
-
-    /**
      * Argon2id 密码编码器.
      */
     @Bean
@@ -66,8 +50,8 @@ public class SecurityAutoConfiguration {
      * 认证管理器: 将认证逻辑全面委派给 LoginAuthenticationProvider.
      */
     @Bean
-    public AuthenticationManager authenticationManager(AbstractLoginAuthenticationProvider abstractLoginAuthenticationProvider) {
-        return new ProviderManager(abstractLoginAuthenticationProvider);
+    public AuthenticationManager authenticationManager(AbstractLoginAuthenticationProvider provider) {
+        return new ProviderManager(provider);
     }
 
     /**

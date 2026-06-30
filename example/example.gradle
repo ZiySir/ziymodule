@@ -9,6 +9,7 @@ dependencies {
 	api project(':module:webmvc')
 	api project(':module:data')
 	api project(':module:security')
+	api project(':service:user')
 
 	implementation 'com.h2database:h2:2.4.240'
 

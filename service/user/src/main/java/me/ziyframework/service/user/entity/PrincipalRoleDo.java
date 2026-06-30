@@ -1,4 +1,4 @@
-package me.ziyframework.module.security.entity;
+package me.ziyframework.service.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.ziyframework.boot.data.spring.jpa.entity.JpaRelationalBaseEntity;
+import me.ziyframework.module.security.auth.PrincipalType;
 import org.jspecify.annotations.Nullable;
 
 /**

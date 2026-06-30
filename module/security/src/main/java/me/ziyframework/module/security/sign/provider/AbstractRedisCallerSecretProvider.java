@@ -3,7 +3,6 @@ package me.ziyframework.module.security.sign.provider;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.ziyframework.module.security.entity.OpenCallerDoRepository;
 import me.ziyframework.module.security.sign.SignRedisKeys;
 import me.ziyframework.module.security.sign.exception.CallerNotFoundException;
 import org.jspecify.annotations.Nullable;
@@ -19,8 +18,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 public abstract class AbstractRedisCallerSecretProvider implements CallerSecretProvider {
 
     private final StringRedisTemplate redisTemplate;
-
-    private final OpenCallerDoRepository repository;
 
     private final long cacheTtlSeconds;
 

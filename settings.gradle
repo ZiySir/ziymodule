@@ -5,6 +5,8 @@ include 'module:data'
 include 'module:security'
 
 include 'service'
+include 'service:gateway'
+include 'service:user'
 
 include 'example'
 

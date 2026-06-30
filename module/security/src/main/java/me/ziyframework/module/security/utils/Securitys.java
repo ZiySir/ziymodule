@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import me.ziyframework.boot.core.SpringHolder;
 import me.ziyframework.module.security.auth.AuthManager;
 import me.ziyframework.module.security.auth.MultiUsernamePasswordAuthenticationToken;
-import me.ziyframework.module.security.entity.PrincipalType;
+import me.ziyframework.module.security.auth.PrincipalType;
 import org.springframework.security.core.Authentication;
 
 /**
