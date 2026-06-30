@@ -1,6 +1,5 @@
 package me.ziyframework.module.data.process;
 
-import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree.JCCompilationUnit;
@@ -9,7 +8,6 @@ import com.sun.tools.javac.util.Names;
 import jakarta.persistence.Entity;
 import jakarta.persistence.MappedSuperclass;
 import java.util.Set;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
@@ -22,7 +20,6 @@ import me.ziyframework.process.common.BaseProcessor;
  *
  * @author ziy
  */
-@AutoService(Processor.class)
 public class SafeEntityJavacProcessor extends BaseProcessor {
 
     /**

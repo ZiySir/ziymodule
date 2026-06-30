@@ -7,6 +7,7 @@ import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCBlock;
+import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
@@ -43,13 +44,12 @@ public class SafeEntityTranslator extends BaseTreeTranslator {
     }
 
     /**
-     * {@inheritDoc}
+     * 构建新方法的 JcTree 并返回.
      */
     @Override
-    public void visitClassDef(JCTree.JCClassDecl tree) {
-        super.visitClassDef(tree);
+    protected List<JCTree> visitClassDef0(JCClassDecl tree) {
         if (tree.getKind() != Kind.CLASS) {
-            return;
+            return List.nil();
         }
 
         // 收集字段
@@ -80,7 +80,7 @@ public class SafeEntityTranslator extends BaseTreeTranslator {
                             "SafeEntityTreeTranslator: generated " + newDefs.size() + " methods for " + qualifiedName);
         }
 
-        tree.defs = tree.defs.appendList(newDefs.toList());
+        return newDefs.toList();
     }
 
     /**
