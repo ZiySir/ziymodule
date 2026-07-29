@@ -47,7 +47,6 @@ public final class BaseEnumDeserializer extends ValueDeserializer<BaseEnum<?>> {
         return BaseEnum.fromCode(code, (Class<E>) cls);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ValueDeserializer<?> createContextual(
             DeserializationContext _deserializationContext, BeanProperty beanProperty) {

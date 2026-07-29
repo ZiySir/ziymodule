@@ -7,7 +7,6 @@ plugins {
 description "使用SpringDataJPA能力"
 
 dependencies {
-	logger.info("当前hibernate版本 ${dependencyManagement.importedProperties.get('hibernate.version')} ,需要注意blaze集成版本是否对应")
 	developmentOnly 'p6spy:p6spy'
 
 	// postgres driver
@@ -49,6 +48,19 @@ dependencies {
 		implementation project(':module:data')
 		annotationProcessor project(':module:data')
 	}
+
+    // 解析一下hibernate的版本号
+    String hibernateVersion = dependencyManagement.importedProperties.get('hibernate.version').toString()
+    String[] versions = hibernateVersion.split("\\.")
+    // 解析一下blaze集成的hibernate版本
+    def blazeHibernateDep = configurations.implementation.dependencies.find {
+        it.name?.startsWith('blaze-persistence-integration-hibernate-')
+    }
+    String blazeHibernateVersion = blazeHibernateDep?.name?.replace('blaze-persistence-integration-hibernate-', '')
+    String[] blazeVersions = blazeHibernateVersion?.split("\\.")
+    if (versions[0] != blazeVersions[0] || versions[1] != blazeVersions[1]) {
+        logger.error("当前hibernate版本 ${dependencyManagement.importedProperties.get('hibernate.version')} ,与Blaze的集成版本不一致")
+    }
 }
 
 /* ***************************** 解决 jpamodel-gen重复生成问题 第二种方案 ***************************** */

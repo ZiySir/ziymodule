@@ -56,7 +56,7 @@ public class BaseException extends RuntimeException {
      */
     @Override
     public String getMessage() {
-        if (message.startsWith("{") && message.endsWith("}")) {
+        if (message.startsWith("{") && message.endsWith("}") && !message.equals("{}")) {
             return MessageSourceHolder.i18n(message.substring(1, message.length() - 1), args);
         }
         return MessageFormatter.arrayFormat(message, args).getMessage();

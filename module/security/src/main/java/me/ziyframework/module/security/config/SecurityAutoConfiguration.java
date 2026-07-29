@@ -1,7 +1,5 @@
 package me.ziyframework.module.security.config;
 
-import com.blazebit.persistence.integration.view.spring.EnableEntityViews;
-import com.blazebit.persistence.spring.data.repository.config.EnableBlazeRepositories;
 import com.password4j.Argon2Function;
 import com.password4j.types.Argon2;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +7,6 @@ import me.ziyframework.module.security.auth.AbstractLoginAuthenticationProvider;
 import me.ziyframework.module.security.auth.AuthManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -30,9 +27,6 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @AutoConfiguration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(SecurityProperties.class)
-@EntityScan(basePackages = "me.ziyframework.module.security.entity")
-@EnableEntityViews(basePackages = "me.ziyframework.module.security.entity")
-@EnableBlazeRepositories(basePackages = "me.ziyframework.module.security.entity")
 public class SecurityAutoConfiguration {
 
     private final SecurityProperties securityProperties;

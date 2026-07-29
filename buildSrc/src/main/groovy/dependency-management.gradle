@@ -44,7 +44,7 @@ dependencyManagement {
 			entry 'blaze-persistence-entity-view-impl-jakarta'
 			entry 'blaze-persistence-entity-view-processor-jakarta'
 			entry 'blaze-persistence-integration-spring-data-4.0'
-			entry 'blaze-persistence-integration-hibernate-7.1'
+			entry 'blaze-persistence-integration-hibernate-7.2'
 		}
 		// java的密码库
 		dependency 'com.password4j:password4j:1.8.4'
